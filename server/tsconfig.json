@@ -16,6 +16,12 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@articles/*": ["src/articles/*"],
+      "@auth/*": ["src/auth/*"],
+      "@entities/*": ["src/entities/*"],
+      "@common/*": ["src/common/*"]
+    }
   }
 }
