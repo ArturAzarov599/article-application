@@ -12,6 +12,7 @@ const DataSourceConfig = new DataSource({
   username: process.env.DB_USERNAME,
   entities: [process.env.DB_ENTITIES_PATH],
   migrations: [process.env.DB_MIGRATIONS_PATH],
+  host: process.env.DB_HOST,
   synchronize: false,
   migrationsRun: true,
 });

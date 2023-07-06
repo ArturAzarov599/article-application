@@ -9,6 +9,7 @@ export const getDatabaseConfiguration = (
   username: configService.get<string>('DB_USERNAME'),
   password: configService.get<string>('DB_PASSWORD'),
   database: configService.get<string>('DB_NAME'),
+  host: configService.get<string>('DB_HOST'),
   entities: [configService.get<string>('DB_ENTITIES_PATH')],
   migrations: [configService.get<string>('DB_MIGRATIONS_PATH')],
   synchronize: false,

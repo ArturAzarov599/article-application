@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  database:
+    image: postgres
+    expose:
+      - 5432
+    ports:
+      - 5432:5433
+    volumes:
+      - data:/data/db
+    env_file:
+      - ./server/.env.prod
+  backend:
+    build: ./server
+    ports:
+      - 3000:3000
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    env_file:
+      - ./server/.env.prod
+    depends_on:
+      - database
+
+volumes:
+  data:
