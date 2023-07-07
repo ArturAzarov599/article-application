@@ -21,6 +21,14 @@ services:
       - ./server/.env.prod
     depends_on:
       - database
+  frontend:
+    build: ./client
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./client/src:/app/src
+    depends_on:
+      - backend
 
 volumes:
   data:

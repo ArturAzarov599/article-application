@@ -9,5 +9,6 @@ import { providers } from '@auth/module/providers';
   controllers: [AuthController],
   providers,
   imports,
+  exports: providers,
 })
 export class AuthModule {}

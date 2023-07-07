@@ -11,10 +11,22 @@ async function bootstrap() {
     .setTitle('News API')
     .setDescription('The news API description')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        description: 'Enter JWT token',
+        name: 'JWT',
+        bearerFormat: 'Bearer',
+        type: 'http',
+        in: 'header',
+        scheme: 'Bearer',
+      },
+      'access-token',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('documentation', app, document);
 
+  app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

@@ -25,9 +25,9 @@ export class AuthRepository implements IAuthRepository {
     }
   }
 
-  signUp({ email, password }: AuthDto): Promise<AuthEntity> {
+  signUp(dto: AuthDto): Promise<AuthEntity> {
     try {
-      return this.authRepository.save({ email, password });
+      return this.authRepository.save(dto);
     } catch (error) {
       throw error;
     }

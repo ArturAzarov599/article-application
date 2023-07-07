@@ -75,7 +75,7 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @ApiBearerAuth('access-token')
   @ApiResponse({
-    status: HttpStatus.CREATED,
+    status: HttpStatus.OK,
     description: `Successfully deleted user`,
   })
   @ApiResponse({

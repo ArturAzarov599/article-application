@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 import { AuthDto } from '@auth/dto/auth.dto';
 
@@ -21,7 +22,16 @@ export class AuthService implements IAuthService {
     @Inject(AUTH_REPOSITORY_TOKEN)
     private readonly authRepository: IAuthRepository,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
+
+  findByEmail(email: string): Promise<AuthDto> {
+    try {
+      return this.authRepository.findCredentials(email);
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async signIn({ email, password }: AuthDto): Promise<string> {
     try {
@@ -33,7 +43,12 @@ export class AuthService implements IAuthService {
 
       if (!isMatch) throw new UnauthorizedException();
 
-      return this.jwtService.signAsync({ email });
+      console.log({ email, password });
+
+      return this.jwtService.signAsync(
+        { email },
+        { secret: this.configService.get<string>('JWT_SECRET') },
+      );
     } catch (error) {
       throw error;
     }

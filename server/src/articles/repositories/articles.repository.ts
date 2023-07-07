@@ -32,25 +32,24 @@ export class ArticlesRepository implements IArticlesRepository {
     title,
   }: GetArticlesDto): Promise<GetAllArticlesDto> {
     try {
-      const total = await this.articlesRepository.count();
-      let articles: ArticleEntity[] = [];
+      let articles: [ArticleEntity[], number] = [[], 0];
 
       if (title) {
-        articles = await this.articlesRepository.find({
+        articles = await this.articlesRepository.findAndCount({
           where: { title: ILike(`%${title}%`) },
           skip,
           take,
         });
       } else {
-        articles = await this.articlesRepository.find({
+        articles = await this.articlesRepository.findAndCount({
           skip,
           take,
         });
       }
 
       return {
-        articles,
-        total,
+        articles: articles[0],
+        total: articles[1],
       };
     } catch (error) {
       throw error;
