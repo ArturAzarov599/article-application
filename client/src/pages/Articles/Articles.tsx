@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, useContext, useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import Box from "@mui/material/Box";
@@ -24,14 +24,16 @@ import {
   getTotalPages,
   getSelectedArticle,
 } from "src/store/articles/selectors";
+import { WebsocketContext } from "src/context/WebsocketContext";
 
 const Articles = () => {
+  const socket = useContext(WebsocketContext);
   const skip = useSelector(getSkipArticles);
   const limit = useSelector(getLimit);
   const totalPages = useSelector(getTotalPages);
   const title = useSelector(getTitle);
   const selectedArticle = useSelector(getSelectedArticle);
-  const { data, isLoading } = useGetArticlesQuery(
+  const { data, isLoading, refetch } = useGetArticlesQuery(
     {
       limit,
       skip,
@@ -50,6 +52,23 @@ const Articles = () => {
     const calculateSkip = (value - 1) * limit;
     switchPage(calculateSkip);
   };
+
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log(`Connect`);
+    });
+
+    socket.on("onFetchFeeds", () => {
+      refetch();
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("onFetchFeeds");
+      console.log(`Close sockets`);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Grid

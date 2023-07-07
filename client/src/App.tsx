@@ -8,28 +8,31 @@ import Menu from "src/components/Menu";
 import Articles from "src/pages/Articles/Articles";
 
 import { store } from "src/store/store";
+import { WebsocketProvider, socket } from "src/context/WebsocketContext";
 
 import { ARTICLES_ROUTE, AUTH_ROUTE } from "src/constants/routes";
 
 const App = () => {
   return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <Grid container direction="column" style={{ height: "100%" }}>
-          <Grid item>
-            <Menu />
-          </Grid>
+    <WebsocketProvider value={socket}>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Grid container direction="column" style={{ height: "100%" }}>
+            <Grid item>
+              <Menu />
+            </Grid>
 
-          <Grid xs item>
-            <Routes>
-              <Route path="/" element={<Navigate to={ARTICLES_ROUTE} />} />
-              <Route path={AUTH_ROUTE} element={<Auth />} />
-              <Route path={ARTICLES_ROUTE} element={<Articles />} />
-            </Routes>
+            <Grid xs item>
+              <Routes>
+                <Route path="/" element={<Navigate to={ARTICLES_ROUTE} />} />
+                <Route path={AUTH_ROUTE} element={<Auth />} />
+                <Route path={ARTICLES_ROUTE} element={<Articles />} />
+              </Routes>
+            </Grid>
           </Grid>
-        </Grid>
-      </BrowserRouter>
-    </Provider>
+        </BrowserRouter>
+      </Provider>
+    </WebsocketProvider>
   );
 };
 

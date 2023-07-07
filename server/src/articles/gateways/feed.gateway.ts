@@ -14,7 +14,11 @@ import { IParsedOriginalArticle } from '@articles/services/interfaces/parsed-ori
 
 import { ARTICLES_REPOSITORY_TOKEN } from 'src/injection-tokens';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: ['http://localhost:3001'],
+  },
+})
 export class FeedGateway implements IFeedGateway {
   constructor(
     private readonly configService: ConfigService,
@@ -33,10 +37,10 @@ export class FeedGateway implements IFeedGateway {
     this.server.on('connection', () => console.log(`Connected`));
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_HOUR)
   async fetchFeeds() {
     try {
-      this.logger.log('Fetch new articles');
+      this.logger.log('Fetch feeds');
       const response = await this.httpService.axiosRef.get(this.rssUrl);
       const articles: ArticleDto[] = this.parser
         .parse(response.data)
