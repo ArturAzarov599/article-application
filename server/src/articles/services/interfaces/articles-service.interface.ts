@@ -10,5 +10,4 @@ export interface IArticleService {
   create(dto: CreateArticleDto): Promise<ArticleEntity>;
   delete(id: string): Promise<ArticleEntity>;
   update(dto: Partial<ArticleDto>): Promise<ArticleEntity>;
-  fetchArticles(): Promise<void>;
 }

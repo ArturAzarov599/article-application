@@ -1,6 +1,7 @@
 import { Provider } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
+import { FeedGateway } from '@articles/gateways/feed.gateway';
 import { ArticlesService } from '@articles/services/articles.service';
 import { ArticlesRepository } from '@articles/repositories/articles.repository';
 
@@ -19,4 +20,5 @@ export const providers: Provider[] = [
     provide: ARTICLES_REPOSITORY_TOKEN,
   },
   JwtService,
+  FeedGateway,
 ];
