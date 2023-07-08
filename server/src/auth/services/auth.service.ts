@@ -9,7 +9,11 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
-import { AuthDto } from '@auth/dto/auth.dto';
+import { AuthEntity } from '@entities/auth.entity';
+
+import { AuthDto } from '@auth/dtos/auth.dto';
+import { SignInDto } from '@auth/dtos/sign-in.dto';
+import { ExtendedAuthDto } from '@auth/dtos/extended-auth.dto';
 
 import { IAuthService } from '@auth/services/interfaces/auth-service.interface';
 import { IAuthRepository } from '@auth/repositories/interfaces/auth-repository.interface';
@@ -25,7 +29,7 @@ export class AuthService implements IAuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  findByEmail(email: string): Promise<AuthDto> {
+  findByEmail(email: string): Promise<AuthEntity> {
     try {
       return this.authRepository.findCredentials(email);
     } catch (error) {
@@ -33,7 +37,7 @@ export class AuthService implements IAuthService {
     }
   }
 
-  async signIn({ email, password }: AuthDto): Promise<string> {
+  async signIn({ email, password }: AuthDto): Promise<SignInDto> {
     try {
       const userCredentials = await this.authRepository.findCredentials(email);
 
@@ -43,18 +47,27 @@ export class AuthService implements IAuthService {
 
       if (!isMatch) throw new UnauthorizedException();
 
-      console.log({ email, password });
-
-      return this.jwtService.signAsync(
+      const token = await this.jwtService.signAsync(
         { email },
         { secret: this.configService.get<string>('JWT_SECRET') },
       );
+      const { username } = await this.findByEmail(email);
+
+      return {
+        token,
+        email,
+        username,
+      };
     } catch (error) {
       throw error;
     }
   }
 
-  async signUp({ email, password, username }: AuthDto): Promise<AuthDto> {
+  async signUp({
+    email,
+    password,
+    username,
+  }: ExtendedAuthDto): Promise<boolean> {
     try {
       const userCredentials = await this.authRepository.findCredentials(email);
 

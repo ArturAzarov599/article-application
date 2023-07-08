@@ -11,8 +11,10 @@ import { ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
 import { AuthGuard } from '@common/guards/auth.guard';
 
-import { AuthDto } from '@auth/dto/auth.dto';
-import { EmailDto } from '@auth/dto/email.dto';
+import { AuthDto } from '@auth/dtos/auth.dto';
+import { EmailDto } from '@auth/dtos/email.dto';
+import { SignInDto } from '@auth/dtos/sign-in.dto';
+import { ExtendedAuthDto } from '@auth/dtos/extended-auth.dto';
 
 import { IAuthService } from '@auth/services/interfaces/auth-service.interface';
 
@@ -46,7 +48,7 @@ export class AuthController {
     status: HttpStatus.BAD_REQUEST,
     description: `Body validation failed`,
   })
-  signIn(@Body() body: AuthDto): Promise<string> {
+  signIn(@Body() body: AuthDto): Promise<SignInDto> {
     try {
       return this.authService.signIn(body);
     } catch (error) {
@@ -63,7 +65,7 @@ export class AuthController {
     status: HttpStatus.BAD_REQUEST,
     description: 'User is already created or body validation failed',
   })
-  signUp(@Body() body: AuthDto): Promise<AuthDto> {
+  async signUp(@Body() body: ExtendedAuthDto): Promise<boolean> {
     try {
       return this.authService.signUp(body);
     } catch (error) {
@@ -90,7 +92,7 @@ export class AuthController {
     status: HttpStatus.BAD_REQUEST,
     description: `Body validation failed`,
   })
-  deleteCredentials(@Body() { email }: EmailDto) {
+  deleteCredentials(@Body() { email }: EmailDto): Promise<boolean> {
     try {
       return this.authService.deleteCredentials(email);
     } catch (error) {

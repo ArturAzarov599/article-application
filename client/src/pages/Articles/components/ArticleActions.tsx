@@ -9,6 +9,7 @@ import { useDeleteArticleMutation } from "src/store/articles/articles.api";
 import { useArticlesActions } from "src/store/articles/hooks/useArticlesActions";
 import ArticleModal from "./ArticleModal";
 import { TArticleMode } from "src/types/article-mode.type";
+import { getEmail } from "src/store/auth/selectors";
 
 const ArticleActions = () => {
   const [deleteArticle, { data, isSuccess }] = useDeleteArticleMutation();
@@ -16,6 +17,7 @@ const ArticleActions = () => {
   const { selectArticle } = useArticlesActions();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [mode, setMode] = useState<TArticleMode>("create");
+  const email = useSelector(getEmail);
 
   const handleModalState = (state: boolean): void => setOpenModal(state);
 
@@ -40,6 +42,10 @@ const ArticleActions = () => {
       padding="16px"
       height="100%"
       direction="column"
+      style={{
+        opacity: email ? 1 : 0,
+        visibility: email ? "visible" : "hidden",
+      }}
     >
       <Grid item>
         <Button

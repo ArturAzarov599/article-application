@@ -1,9 +1,9 @@
 import { AuthEntity } from 'src/entities/auth.entity';
 
-import { AuthDto } from '@auth/dto/auth.dto';
+import { ExtendedAuthDto } from '@auth/dtos/extended-auth.dto';
 
 export interface IAuthRepository {
   findCredentials(email: string): Promise<AuthEntity>;
-  signUp(dto: AuthDto): Promise<AuthEntity>;
+  signUp(dto: ExtendedAuthDto): Promise<boolean>;
   deleteCredentials(email: string): Promise<boolean>;
 }

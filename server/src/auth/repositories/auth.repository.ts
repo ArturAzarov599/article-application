@@ -4,7 +4,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { AuthEntity } from 'src/entities/auth.entity';
 
-import { AuthDto } from '@auth/dto/auth.dto';
+import { ExtendedAuthDto } from '@auth/dtos/extended-auth.dto';
 
 import { IAuthRepository } from '@auth/repositories/interfaces/auth-repository.interface';
 
@@ -25,9 +25,11 @@ export class AuthRepository implements IAuthRepository {
     }
   }
 
-  signUp(dto: AuthDto): Promise<AuthEntity> {
+  async signUp(dto: ExtendedAuthDto): Promise<boolean> {
     try {
-      return this.authRepository.save(dto);
+      await this.authRepository.save(dto);
+
+      return true;
     } catch (error) {
       throw error;
     }

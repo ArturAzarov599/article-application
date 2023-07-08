@@ -28,14 +28,16 @@ const Menu = () => {
       display="flex"
       justifyContent="flex-end"
       padding="15px"
-      bgcolor="orangered"
+      bgcolor="#1976d2"
     >
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
         <MenuItem title="Articles" onClick={() => goToPage(ARTICLES_ROUTE)} />
         <MenuItem title="Auth" onClick={() => goToPage(AUTH_ROUTE)} />
         <Tooltip title="Account settings">
           <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
-            <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            <Avatar sx={{ width: 32, height: 32, backgroundColor: "#9c27b0" }}>
+              M
+            </Avatar>
           </IconButton>
         </Tooltip>
       </Box>
