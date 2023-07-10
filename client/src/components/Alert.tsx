@@ -1,29 +1,27 @@
-import { FC } from "react";
+import { FC } from 'react'
 
-import AlertComponent from "@mui/material/Alert/Alert";
-import Snackbar from "@mui/material/Snackbar/Snackbar";
-
-import type { AlertColor } from "@mui/material/Alert/Alert";
+import AlertComponent, { AlertColor } from '@mui/material/Alert/Alert'
+import Snackbar from '@mui/material/Snackbar/Snackbar'
 
 interface IAlertProps {
-  message: string;
-  open: boolean;
-  onCloseHandler: () => void;
-  type: AlertColor;
+  message: string
+  open: boolean
+  onCloseHandler: () => void
+  type: AlertColor
 }
 
 const Alert: FC<IAlertProps> = ({ message, onCloseHandler, open, type }) => (
   <Snackbar
     open={open}
     anchorOrigin={{
-      horizontal: "right",
-      vertical: "top",
+      horizontal: 'right',
+      vertical: 'top',
     }}
     autoHideDuration={3000}
     onClose={onCloseHandler}
   >
     <AlertComponent severity={type}>{message}</AlertComponent>
   </Snackbar>
-);
+)
 
-export default Alert;
+export default Alert

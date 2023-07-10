@@ -1,9 +1,9 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-import { articlesApi } from "src/store/articles/articles.api";
+import { articlesApi } from 'src/store/articles/articles.api'
 
-import { IArticle } from "src/interfaces/article.interface";
-import { IError } from "src/interfaces/error.interface";
+import { IArticle } from 'src/interfaces/article.interface'
+import { IError } from 'src/interfaces/error.interface'
 
 interface IArticlesSliceState {
   skip: number;
@@ -19,28 +19,28 @@ const initialState: IArticlesSliceState = {
   limit: 15,
   skip: 0,
   pages: 0,
-  title: "",
+  title: '',
   selectedArticle: null,
-  errorMessage: "",
-  successMessage: "",
-};
+  errorMessage: '',
+  successMessage: '',
+}
 
 export const articlesSlice = createSlice({
-  name: "articlesSlice",
+  name: 'articlesSlice',
   initialState,
   reducers: {
     setTitle: (state, action: PayloadAction<string>) => {
-      state.title = action.payload;
+      state.title = action.payload
     },
     switchPage: (state, action: PayloadAction<number>) => {
-      state.skip = action.payload;
+      state.skip = action.payload
     },
     selectArticle: (state, action: PayloadAction<IArticle | null>) => {
-      state.selectedArticle = action.payload;
+      state.selectedArticle = action.payload
     },
     clearMessages: (state) => {
-      state.errorMessage = "";
-      state.successMessage = "";
+      state.errorMessage = ''
+      state.successMessage = ''
     },
   },
   extraReducers: (builder) =>
@@ -48,43 +48,43 @@ export const articlesSlice = createSlice({
       .addMatcher(
         articlesApi.endpoints.getArticles.matchFulfilled,
         (state, action) => {
-          state.pages = Math.ceil(action.payload.total / state.limit);
+          state.pages = Math.ceil(action.payload.total / state.limit)
         }
       )
       .addMatcher(
         articlesApi.endpoints.createArticle.matchFulfilled,
         (state) => {
-          state.successMessage = "Article successfully created";
+          state.successMessage = 'Article successfully created'
         }
       )
       .addMatcher(
         articlesApi.endpoints.updateArticle.matchFulfilled,
         (state) => {
-          state.successMessage = "Article successfully updated";
+          state.successMessage = 'Article successfully updated'
         }
       )
       .addMatcher(
         articlesApi.endpoints.createArticle.matchRejected,
         (state, action) => {
-          state.errorMessage = (action.payload?.data as IError).message || "";
+          state.errorMessage = (action.payload?.data as IError).message || ''
         }
       )
       .addMatcher(
         articlesApi.endpoints.updateArticle.matchRejected,
         (state, action) => {
-          state.errorMessage = (action.payload?.data as IError).message || "";
+          state.errorMessage = (action.payload?.data as IError).message || ''
         }
       )
       .addMatcher(
         articlesApi.endpoints.deleteArticle.matchRejected,
         (state, action) => {
-          state.errorMessage = (action.payload?.data as IError).message || "";
+          state.errorMessage = (action.payload?.data as IError).message || ''
         }
       )
       .addMatcher(
         articlesApi.endpoints.deleteArticle.matchFulfilled,
         (state) => {
-          state.successMessage = "Article successfully deleted!";
+          state.successMessage = 'Article successfully deleted!'
         }
       ),
-});
+})

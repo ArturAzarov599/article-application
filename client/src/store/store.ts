@@ -1,10 +1,10 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore } from '@reduxjs/toolkit'
 
-import { authReducer } from "src/store/auth/reducer";
-import { articlesReducer } from "src/store/articles/reducer";
+import { authReducer } from 'src/store/auth/reducer'
+import { articlesReducer } from 'src/store/articles/reducer'
 
-import { authApi } from "src/store/auth/auth.api";
-import { articlesApi } from "src/store/articles/articles.api";
+import { authApi } from 'src/store/auth/auth.api'
+import { articlesApi } from 'src/store/articles/articles.api'
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +15,6 @@ export const store = configureStore({
     getDefaultMiddleware()
       .concat(articlesApi.middleware)
       .concat(authApi.middleware),
-});
+})
 
 export type RootState = ReturnType<typeof store.getState>;

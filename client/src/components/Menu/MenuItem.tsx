@@ -1,22 +1,22 @@
-import { FC } from "react";
+import { FC } from 'react'
 
-import Typography from "@mui/material/Typography";
+import Typography from '@mui/material/Typography'
 
 interface IMenuItemProps {
-  title: string;
-  onClick: () => void;
+  title: string
+  onClick: () => void
 }
 
 const MenuItem: FC<IMenuItemProps> = ({ onClick, title }) => (
   <Typography
     sx={{ minWidth: 100 }}
     onClick={onClick}
-    color="white"
+    color='white'
     fontSize={18}
-    style={{ cursor: "pointer" }}
+    style={{ cursor: 'pointer' }}
   >
     {title}
   </Typography>
-);
+)
 
-export default MenuItem;
+export default MenuItem

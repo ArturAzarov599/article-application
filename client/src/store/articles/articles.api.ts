@@ -1,21 +1,21 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import type { RootState } from "src/store/store";
-import { IArticle } from "src/interfaces/article.interface";
-import { IGetArticles } from "src/interfaces/get-articles.interface";
+import type { RootState } from 'src/store/store'
+import { IArticle } from 'src/interfaces/article.interface'
+import { IGetArticles } from 'src/interfaces/get-articles.interface'
 
 export const articlesApi = createApi({
-  reducerPath: "articlesApi",
+  reducerPath: 'articlesApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: `http://localhost:3000/articles`,
+    baseUrl: 'http://localhost:3000/articles',
     prepareHeaders(headers, { getState }) {
-      const state = getState() as RootState;
-      const token = state.authSlice.token;
-      headers.set("Authorization", `Bearer ${token}`);
-      return headers;
+      const state = getState() as RootState
+      const token = state.authSlice.token
+      headers.set('Authorization', `Bearer ${token}`)
+      return headers
     },
   }),
-  tagTypes: ["ARTICLES"],
+  tagTypes: ['ARTICLES'],
   endpoints: (builder) => ({
     getArticles: builder.query<
       { articles: IArticle[]; total: number },
@@ -23,39 +23,39 @@ export const articlesApi = createApi({
     >({
       query: ({ limit, skip, title }) => ({
         url: `?title=${title}&skip=${skip}&limit=${limit}`,
-        method: "GET",
+        method: 'GET',
       }),
-      providesTags: ["ARTICLES"],
+      providesTags: ['ARTICLES'],
     }),
-    createArticle: builder.mutation<IArticle, Omit<IArticle, "id">>({
+    createArticle: builder.mutation<IArticle, Omit<IArticle, 'id'>>({
       query: (article) => ({
-        url: "",
-        method: "POST",
+        url: '',
+        method: 'POST',
         body: article,
       }),
-      invalidatesTags: ["ARTICLES"],
+      invalidatesTags: ['ARTICLES'],
     }),
     updateArticle: builder.mutation<IArticle, IArticle>({
       query: (article) => ({
-        url: "",
-        method: "PUT",
+        url: '',
+        method: 'PUT',
         body: article,
       }),
-      invalidatesTags: ["ARTICLES"],
+      invalidatesTags: ['ARTICLES'],
     }),
     deleteArticle: builder.mutation<IArticle, string>({
       query: (articleId) => ({
         url: `/${articleId}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: ["ARTICLES"],
+      invalidatesTags: ['ARTICLES'],
     }),
   }),
-});
+})
 
 export const {
   useGetArticlesQuery,
   useCreateArticleMutation,
   useUpdateArticleMutation,
   useDeleteArticleMutation,
-} = articlesApi;
+} = articlesApi

@@ -1,1 +1,1 @@
-export type TArticleMode = "create" | "update";
+export type TArticleMode = 'create' | 'update';
