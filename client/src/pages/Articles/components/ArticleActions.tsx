@@ -4,20 +4,22 @@ import { useSelector } from "react-redux";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 
+import ArticleModal from "src/pages/Articles/components/ArticleModal";
+
+import { getEmail } from "src/store/auth/selectors";
 import { getSelectedArticle } from "src/store/articles/selectors";
 import { useDeleteArticleMutation } from "src/store/articles/articles.api";
 import { useArticlesActions } from "src/store/articles/hooks/useArticlesActions";
-import ArticleModal from "./ArticleModal";
+
 import { TArticleMode } from "src/types/article-mode.type";
-import { getEmail } from "src/store/auth/selectors";
 
 const ArticleActions = () => {
-  const [deleteArticle, { data, isSuccess }] = useDeleteArticleMutation();
+  const email = useSelector(getEmail);
+  const [mode, setMode] = useState<TArticleMode>("create");
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const selectedArticle = useSelector(getSelectedArticle);
   const { selectArticle } = useArticlesActions();
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const [mode, setMode] = useState<TArticleMode>("create");
-  const email = useSelector(getEmail);
+  const [deleteArticle] = useDeleteArticleMutation();
 
   const handleModalState = (state: boolean): void => setOpenModal(state);
 

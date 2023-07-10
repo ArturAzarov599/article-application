@@ -8,7 +8,7 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "launch": "npm run migration:run && npm run start",
+    "launch": "npm run migration:run && npm start",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -35,6 +35,7 @@
     "@nestjs/swagger": "^7.1.1",
     "@nestjs/typeorm": "^10.0.0",
     "@nestjs/websockets": "^9.3.9",
+    "@types/uuid": "^9.0.2",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",
@@ -45,7 +46,8 @@
     "pg": "^8.11.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

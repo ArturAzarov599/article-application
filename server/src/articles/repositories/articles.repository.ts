@@ -1,4 +1,5 @@
 import { Repository, ILike } from 'typeorm';
+import { v4 as uuid4 } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
@@ -39,11 +40,21 @@ export class ArticlesRepository implements IArticlesRepository {
           where: { title: ILike(`%${title}%`) },
           skip,
           take,
+          order: {
+            publishDate: {
+              direction: 'DESC',
+            },
+          },
         });
       } else {
         articles = await this.articlesRepository.findAndCount({
           skip,
           take,
+          order: {
+            publishDate: {
+              direction: 'DESC',
+            },
+          },
         });
       }
 
@@ -58,7 +69,8 @@ export class ArticlesRepository implements IArticlesRepository {
 
   create(dto: CreateArticleDto): Promise<ArticleEntity> {
     try {
-      return this.articlesRepository.save(dto);
+      const id = uuid4();
+      return this.articlesRepository.save({ id, ...dto });
     } catch (error) {
       throw error;
     }

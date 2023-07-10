@@ -1,27 +1,35 @@
-import { useState } from "react";
+import { useState, MouseEvent } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import Box from "@mui/material/Box";
+import Item from "@mui/material/MenuItem";
 import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import AccountMenu from "@mui/material/Menu";
-import Item from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-
 import LogoutIcon from "@mui/icons-material/Logout";
+import ListItemIcon from "@mui/material/ListItemIcon";
 
 import MenuItem from "src/components/Menu/MenuItem";
 
-import { ARTICLES_ROUTE, AUTH_ROUTE } from "src/constants/routes";
+import { getEmail } from "src/store/auth/selectors";
+import { useAuthActions } from "src/store/auth/hooks/useAuthActions";
+
+import { ARTICLES_ROUTE, AUTH_SIGN_IN_ROUTE } from "src/constants/routes";
 
 const Menu = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
-  const open = !!anchorEl;
-  const handleClose = () => setAnchorEl(null);
+  const email = useSelector(getEmail);
+  const { signOut } = useAuthActions();
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const handleClose = (): void => setAnchorEl(null);
+
   const goToPage = (routeName: string): void => navigate(routeName);
-  const handleClick = (event: any) => setAnchorEl(event.currentTarget);
+
+  const handleClick = (event: MouseEvent<HTMLElement>): void =>
+    setAnchorEl(event.currentTarget);
 
   return (
     <Box
@@ -32,31 +40,40 @@ const Menu = () => {
     >
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
         <MenuItem title="Articles" onClick={() => goToPage(ARTICLES_ROUTE)} />
-        <MenuItem title="Auth" onClick={() => goToPage(AUTH_ROUTE)} />
-        <Tooltip title="Account settings">
+        <MenuItem title="Auth" onClick={() => goToPage(AUTH_SIGN_IN_ROUTE)} />
+        <Tooltip
+          title="Account settings"
+          style={{
+            opacity: email ? 1 : 0,
+            visibility: email ? "visible" : "hidden",
+          }}
+        >
           <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
             <Avatar sx={{ width: 32, height: 32, backgroundColor: "#9c27b0" }}>
-              M
+              {email ? email?.[0]?.toUpperCase() : ""}
             </Avatar>
           </IconButton>
         </Tooltip>
       </Box>
-      {/* add if condition */}
+
       <AccountMenu
         anchorEl={anchorEl}
-        open={open}
+        open={!!anchorEl}
         onClose={handleClose}
         onClick={handleClose}
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        style={{
+          opacity: email ? 1 : 0,
+          visibility: email ? "visible" : "hidden",
+        }}
       >
-        <Item onClick={handleClose}>
-          <ListItemIcon>
-            <Avatar style={{ width: "24px", height: "24px" }} />
-          </ListItemIcon>
-          Profile
-        </Item>
-        <Item onClick={handleClose}>
+        <Item
+          onClick={() => {
+            handleClose();
+            signOut();
+          }}
+        >
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
           </ListItemIcon>

@@ -1,6 +1,7 @@
 import { FC } from "react";
-import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useFormik } from "formik";
+import { useSelector } from "react-redux";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -10,12 +11,15 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 
-import { TArticleMode } from "src/types/article-mode.type";
-import { IArticle } from "src/interfaces/article.interface";
 import {
   useCreateArticleMutation,
   useUpdateArticleMutation,
 } from "src/store/articles/articles.api";
+import { getDate } from "src/utils/date";
+import { getEmail } from "src/store/auth/selectors";
+
+import { TArticleMode } from "src/types/article-mode.type";
+import { IArticle } from "src/interfaces/article.interface";
 
 interface IArticleModalProps {
   handleClose: () => void;
@@ -23,15 +27,7 @@ interface IArticleModalProps {
   selectedArticle: IArticle | null;
 }
 
-const initialValues: IArticle = {
-  creator: "",
-  link: "",
-  publishDate: "",
-  title: "",
-  id: "",
-};
-
-const validationSchema = Yup.object().shape({
+const validationSchema = Yup.object({
   creator: Yup.string()
     .required("Required")
     .min(2, "Creator must have more than 1 character"),
@@ -47,22 +43,38 @@ const ArticleModal: FC<IArticleModalProps> = ({
   mode,
   selectedArticle,
 }) => {
-  const [createArticle, createArticleArgs] = useCreateArticleMutation();
-  const [updateArticle, updateArticleArgs] = useUpdateArticleMutation();
+  const [createArticle] = useCreateArticleMutation();
+  const [updateArticle] = useUpdateArticleMutation();
+  const email = useSelector(getEmail);
   const isCreateMode = mode === "create";
-  const handleAction = isCreateMode ? createArticle : updateArticle;
-  const onSaveHandler = (values: IArticle): void => {
-    handleClose();
-    handleAction(values);
+  const initialValues: IArticle = {
+    creator: email,
+    link: "",
+    publishDate: getDate(),
+    title: "",
+    id: "",
   };
   const formValues = isCreateMode
     ? initialValues
     : selectedArticle || initialValues;
-  const { errors, values, handleChange, handleSubmit } = useFormik({
-    validationSchema,
-    initialValues: formValues,
-    onSubmit: onSaveHandler,
-  });
+
+  const onSaveHandler = (values: IArticle): void => {
+    if (isCreateMode) {
+      const { id, ...restValues } = values;
+      createArticle(restValues);
+    } else {
+      updateArticle(values);
+    }
+
+    handleClose();
+  };
+
+  const { errors, values, touched, handleBlur, handleChange, handleSubmit } =
+    useFormik({
+      validationSchema,
+      initialValues: formValues,
+      onSubmit: onSaveHandler,
+    });
 
   return (
     <Box component="form">
@@ -83,9 +95,10 @@ const ArticleModal: FC<IArticleModalProps> = ({
               name="title"
               onChange={handleChange}
               value={values.title}
-              error={!!errors.title}
-              helperText={errors.title}
               fullWidth
+              onBlur={handleBlur}
+              error={touched.title && Boolean(errors.title)}
+              helperText={touched.title && errors.title}
             />
           </Box>
 
@@ -96,8 +109,9 @@ const ArticleModal: FC<IArticleModalProps> = ({
               name="link"
               onChange={handleChange}
               value={values.link}
-              error={!!errors.link}
-              helperText={errors.link}
+              onBlur={handleBlur}
+              error={touched.link && Boolean(errors.link)}
+              helperText={touched.link && errors.link}
               fullWidth
             />
           </Box>
@@ -109,8 +123,9 @@ const ArticleModal: FC<IArticleModalProps> = ({
               name="creator"
               onChange={handleChange}
               value={values.creator}
-              error={!!errors.creator}
-              helperText={errors.creator}
+              onBlur={handleBlur}
+              error={touched.creator && Boolean(errors.creator)}
+              helperText={touched.creator && errors.creator}
               style={{ width: "45%" }}
             />
 
@@ -122,8 +137,9 @@ const ArticleModal: FC<IArticleModalProps> = ({
               InputLabelProps={{ shrink: true }}
               onChange={handleChange}
               value={values.publishDate}
-              error={!!errors.publishDate}
-              helperText={errors.publishDate}
+              onBlur={handleBlur}
+              error={touched.publishDate && Boolean(errors.publishDate)}
+              helperText={touched.publishDate && errors.publishDate}
               style={{ width: "45%" }}
             />
           </Box>

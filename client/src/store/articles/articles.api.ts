@@ -1,11 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+import type { RootState } from "src/store/store";
 import { IArticle } from "src/interfaces/article.interface";
 import { IGetArticles } from "src/interfaces/get-articles.interface";
 
 export const articlesApi = createApi({
   reducerPath: "articlesApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `http://localhost:3000/articles` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `http://localhost:3000/articles`,
+    prepareHeaders(headers, { getState }) {
+      const state = getState() as RootState;
+      const token = state.authSlice.token;
+      headers.set("Authorization", `Bearer ${token}`);
+      return headers;
+    },
+  }),
   tagTypes: ["ARTICLES"],
   endpoints: (builder) => ({
     getArticles: builder.query<

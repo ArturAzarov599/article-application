@@ -9,37 +9,36 @@ import Articles from "src/pages/Articles/Articles";
 import { store } from "src/store/store";
 import { WebsocketProvider, socket } from "src/context/WebsocketContext";
 
-import { ARTICLES_ROUTE, AUTH_ROUTE } from "src/constants/routes";
-import SignIn from "./pages/Auth/components/SignIn";
-import SignUp from "./pages/Auth/components/SignUp";
+import SignIn from "src/pages/Auth/components/SignIn";
+import SignUp from "src/pages/Auth/components/SignUp";
 
-const App = () => {
-  return (
-    <WebsocketProvider value={socket}>
-      <Provider store={store}>
-        <BrowserRouter>
-          <Grid container direction="column" style={{ height: "100%" }}>
-            <Grid item>
-              <Menu />
-            </Grid>
+import {
+  ARTICLES_ROUTE,
+  AUTH_SIGN_IN_ROUTE,
+  AUTH_SIGN_UP_ROUTE,
+} from "src/constants/routes";
 
-            <Grid xs item>
-              <Routes>
-                <Route path="/" element={<Navigate to={ARTICLES_ROUTE} />} />
-                <Route
-                  path={AUTH_ROUTE}
-                  element={<Navigate to={`${AUTH_ROUTE}/sign-in`} />}
-                />
-                <Route path={`${AUTH_ROUTE}/sign-in`} element={<SignIn />} />
-                <Route path={`${AUTH_ROUTE}/sign-up`} element={<SignUp />} />
-                <Route path={ARTICLES_ROUTE} element={<Articles />} />
-              </Routes>
-            </Grid>
+const App = () => (
+  <WebsocketProvider value={socket}>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Grid container direction="column" style={{ height: "100%" }}>
+          <Grid item>
+            <Menu />
           </Grid>
-        </BrowserRouter>
-      </Provider>
-    </WebsocketProvider>
-  );
-};
+
+          <Grid xs item>
+            <Routes>
+              <Route path="/" element={<Navigate to={ARTICLES_ROUTE} />} />
+              <Route path={AUTH_SIGN_IN_ROUTE} element={<SignIn />} />
+              <Route path={AUTH_SIGN_UP_ROUTE} element={<SignUp />} />
+              <Route path={ARTICLES_ROUTE} element={<Articles />} />
+            </Routes>
+          </Grid>
+        </Grid>
+      </BrowserRouter>
+    </Provider>
+  </WebsocketProvider>
+);
 
 export default App;

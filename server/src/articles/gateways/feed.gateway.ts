@@ -3,7 +3,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { Inject, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron, CronExpression, Timeout } from '@nestjs/schedule';
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 
 import { ArticleDto } from '@articles/dtos/article.dto';
@@ -37,6 +37,7 @@ export class FeedGateway implements IFeedGateway {
     this.server.on('connection', () => console.log(`Connected`));
   }
 
+  @Timeout(5000)
   @Cron(CronExpression.EVERY_HOUR)
   async fetchFeeds() {
     try {

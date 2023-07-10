@@ -1,39 +1,60 @@
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { IAuth } from "src/interfaces/auth.interface";
-import * as Yup from "yup";
-import { useSignUpMutation } from "src/store/auth/auth.api";
+import Typography from "@mui/material/Typography";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
-const initialValues: IAuth = {
+import Alert from "src/components/Alert";
+import Loader from "src/components/Loader";
+
+import { useSignUpMutation } from "src/store/auth/auth.api";
+import { getAuthErrorMessage } from "src/store/auth/selectors";
+import { useAuthActions } from "src/store/auth/hooks/useAuthActions";
+
+import { IExtendedAuth } from "src/interfaces/extended-auth";
+
+import { AUTH_SIGN_IN_ROUTE } from "src/constants/routes";
+
+const initialValues: IExtendedAuth = {
   email: "",
   password: "",
   username: "",
 };
 
-const validationSchema = Yup.object().shape({
-  email: Yup.string().email().required("Required!"),
-  password: Yup.string().required("Required!"),
-  username: Yup.string().min(5).required("Required!"),
+const validationSchema = Yup.object({
+  email: Yup.string().email().required(),
+  password: Yup.string().required(),
+  username: Yup.string().min(5).required(),
 });
 
 const SignUp = () => {
-  const [signUp] = useSignUpMutation();
+  const navigate = useNavigate();
+  const { resetErrorMessage } = useAuthActions();
+  const [signUp, { isLoading }] = useSignUpMutation();
+  const authErrorMessage = useSelector(getAuthErrorMessage);
 
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const onSubmit = async (values: IExtendedAuth): Promise<void> => {
+    try {
+      await signUp(values).unwrap();
+      navigate(AUTH_SIGN_IN_ROUTE);
+    } catch (error) {}
   };
+
+  const { values, touched, errors, handleBlur, handleChange, handleSubmit } =
+    useFormik({
+      initialValues,
+      validationSchema,
+      onSubmit,
+    });
 
   return (
     <Container component="main" maxWidth="xs">
@@ -51,36 +72,44 @@ const SignUp = () => {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                required
                 fullWidth
-                id="username"
                 label="Username"
                 name="username"
+                value={values.username}
+                error={touched.username && Boolean(errors.username)}
+                helperText={touched.username && errors.username}
+                onBlur={handleBlur}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                required
                 fullWidth
-                id="email"
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.email && Boolean(errors.email)}
+                helperText={touched.email && errors.email}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                required
                 fullWidth
                 name="password"
                 label="Password"
                 type="password"
-                id="password"
-                autoComplete="new-password"
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.password && Boolean(errors.password)}
+                helperText={touched.password && errors.password}
               />
             </Grid>
           </Grid>
@@ -94,13 +123,22 @@ const SignUp = () => {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="/auth/sign-in" variant="body2">
+              <Link href={AUTH_SIGN_IN_ROUTE} variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>
           </Grid>
         </Box>
       </Box>
+      <Loader open={isLoading} />
+      <Alert
+        message={authErrorMessage}
+        onCloseHandler={() => {
+          resetErrorMessage();
+        }}
+        open={!!authErrorMessage}
+        type="error"
+      />
     </Container>
   );
 };
