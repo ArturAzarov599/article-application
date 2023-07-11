@@ -89,7 +89,7 @@ const Articles = () => {
           <SearchInput />
         </Grid>
 
-        <Grid item xs style={{ overflowY: 'auto' }}>
+        <Grid item xs style={{ overflowY: 'auto', width: '100%' }}>
           {!!data?.articles.length && (
             <List style={{ height: '100%' }}>
               {data?.articles.map((article) => (
